@@ -1,0 +1,46 @@
+table fact_pramotion_coverage
+	lineageTag: a5f54570-aef3-4a0c-937a-d6106c3c7ece
+
+	column campaing_key
+		dataType: int64
+		formatString: 0
+		lineageTag: 8c1f3899-22d2-4bb3-b9f0-738621dea69c
+		summarizeBy: none
+		sourceColumn: campaing_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column product_key
+		dataType: int64
+		formatString: 0
+		lineageTag: 5fcd6753-5629-4641-a3ec-de3df6ff5f14
+		summarizeBy: none
+		sourceColumn: product_key
+
+		annotation SummarizationSetBy = Automatic
+
+	partition fact_pramotion_coverage = m
+		mode: import
+		queryGroup: facts
+		source =
+				let
+				    Source = campaign_skus,
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"CampaignName", type text}, {"PromotedSKUs", type text}}),
+				    #"Split Column by Delimiter" = Table.ExpandListColumn(Table.TransformColumns(#"Changed Type", {{"PromotedSKUs", Splitter.SplitTextByDelimiter(",", QuoteStyle.Csv), let itemType = (type nullable text) meta [Serialized.Text = true] in type {itemType}}}), "PromotedSKUs"),
+				    #"Changed Type1" = Table.TransformColumnTypes(#"Split Column by Delimiter",{{"PromotedSKUs", type text}}),
+				    #"Trimmed Text" = Table.TransformColumns(#"Changed Type1",{{"PromotedSKUs", Text.Trim, type text}}),
+				    #"Merged Queries" = Table.NestedJoin(#"Trimmed Text", {"CampaignName"}, dim_campaign, {"campaign_name"}, "dim_campaign", JoinKind.LeftOuter),
+				    #"Expanded dim_campaign" = Table.ExpandTableColumn(#"Merged Queries", "dim_campaign", {"campaing_key"}, {"campaing_key"}),
+				    #"Reordered Columns" = Table.ReorderColumns(#"Expanded dim_campaign",{"campaing_key", "CampaignName", "PromotedSKUs"}),
+				    #"Merged Queries1" = Table.NestedJoin(#"Reordered Columns", {"PromotedSKUs"}, dim_products, {"product_code"}, "dim_products", JoinKind.LeftOuter),
+				    #"Expanded dim_products" = Table.ExpandTableColumn(#"Merged Queries1", "dim_products", {"product_key"}, {"product_key"}),
+				    #"Reordered Columns1" = Table.ReorderColumns(#"Expanded dim_products",{"campaing_key", "product_key", "CampaignName", "PromotedSKUs"}),
+				    #"Removed Columns" = Table.RemoveColumns(#"Reordered Columns1",{"CampaignName", "PromotedSKUs"})
+				in
+				    #"Removed Columns"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,34 @@
+table dim_date
+	lineageTag: b2e45fad-fa83-434f-984e-9a04c6b14a70
+
+	column Date
+		formatString: yyyy-mm-dd
+		lineageTag: 17e8eccc-c9ab-4f99-be0f-ccbd723ab4af
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Date]
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isDateTimeCustom":true}
+
+	column year = YEAR(dim_date[Date])
+		formatString: 0
+		lineageTag: 7722e367-2307-4bb2-8e69-a47120cfd672
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column month = MONTH(dim_date[Date])
+		formatString: 0
+		lineageTag: 0e3976b4-6986-4ae8-bcf4-0a13630daf36
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dim_date = calculated
+		mode: import
+		source = CALENDARAUTO()
+
+	annotation PBI_Id = d378643d66ed486f9de4f7f59d10c808
+

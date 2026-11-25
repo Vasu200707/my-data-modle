@@ -1,0 +1,37 @@
+table security
+	lineageTag: c0f5828e-e5f3-483d-917b-260774131e7a
+
+	column user_email
+		dataType: string
+		lineageTag: f26b2302-af24-442b-b3d6-0ffd899c4c24
+		summarizeBy: none
+		sourceColumn: user_email
+
+		annotation SummarizationSetBy = Automatic
+
+	column region
+		dataType: string
+		lineageTag: 68e6258b-8839-4e4a-a94a-bd07c3efada9
+		summarizeBy: none
+		sourceColumn: region
+
+		annotation SummarizationSetBy = Automatic
+
+	partition security = m
+		mode: import
+		queryGroup: supports
+		source =
+				let
+				    Source = Excel.Workbook(File.Contents("C:\Users\Vasudha L\OneDrive\Documents\dataset.xlsx"), null, true),
+				    security_Sheet = Source{[Item="security",Kind="Sheet"]}[Data],
+				    #"Changed Type" = Table.TransformColumnTypes(security_Sheet,{{"Column1", type text}, {"Column2", type text}}),
+				    #"Promoted Headers" = Table.PromoteHeaders(#"Changed Type", [PromoteAllScalars=true]),
+				    #"Changed Type1" = Table.TransformColumnTypes(#"Promoted Headers",{{"UserEmail", type text}, {"Region", type text}}),
+				    #"Renamed Columns" = Table.RenameColumns(#"Changed Type1",{{"UserEmail", "user_email"}, {"Region", "region"}})
+				in
+				    #"Renamed Columns"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+

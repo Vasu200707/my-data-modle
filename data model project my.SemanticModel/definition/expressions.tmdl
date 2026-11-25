@@ -1,0 +1,331 @@
+expression Address =
+		let
+		    Source = Excel.Workbook(File.Contents("C:\Users\Vasudha L\OneDrive\Documents\dataset.xlsx"), null, true),
+		    Address_Sheet = Source{[Item="Address",Kind="Sheet"]}[Data],
+		    #"Promoted Headers" = Table.PromoteHeaders(Address_Sheet, [PromoteAllScalars=true]),
+		    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"AddressID", Int64.Type}, {"Street", type text}, {"CityName", type text}})
+		in
+		    #"Changed Type"
+	lineageTag: 0d57361c-55c3-4c11-860a-6bba782048a6
+	queryGroup: base_group
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
+expression CUST_MASTER =
+		let
+		    Source = Excel.Workbook(File.Contents("C:\Users\Vasudha L\OneDrive\Documents\dataset.xlsx"), null, true),
+		    CUST_MASTER_Sheet = Source{[Item="CUST_MASTER",Kind="Sheet"]}[Data],
+		    #"Promoted Headers" = Table.PromoteHeaders(CUST_MASTER_Sheet, [PromoteAllScalars=true]),
+		    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"CustomerID", Int64.Type}, {"CustomerName", type text}, {"Segment", type text}, {"AddressID", Int64.Type}, {"AccountManager", type text}, {"PaymentTerms", type text}, {"hash_key", type text}, {"source_id", type text}})
+		in
+		    #"Changed Type"
+	lineageTag: 28989c5e-4812-40d8-a233-194ae5a39f2b
+	queryGroup: base_group
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+
+expression cities =
+		let
+		    Source = Excel.Workbook(File.Contents("C:\Users\Vasudha L\OneDrive\Documents\dataset.xlsx"), null, true),
+		    cities_Sheet = Source{[Item="cities",Kind="Sheet"]}[Data],
+		    #"Changed Type" = Table.TransformColumnTypes(cities_Sheet,{{"Column1", type text}, {"Column2", type text}}),
+		    #"Promoted Headers" = Table.PromoteHeaders(#"Changed Type", [PromoteAllScalars=true]),
+		    #"Changed Type1" = Table.TransformColumnTypes(#"Promoted Headers",{{"CityName", type text}, {"RegionName", type text}})
+		in
+		    #"Changed Type1"
+	lineageTag: 2123d42d-4dca-4ebb-a3af-37fc5a1ea69f
+	queryGroup: base_group
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
+expression customer_contacts =
+		let
+		    Source = Excel.Workbook(File.Contents("C:\Users\Vasudha L\OneDrive\Documents\dataset.xlsx"), null, true),
+		    customer_contacts_Sheet = Source{[Item="customer_contacts",Kind="Sheet"]}[Data],
+		    #"Promoted Headers" = Table.PromoteHeaders(customer_contacts_Sheet, [PromoteAllScalars=true]),
+		    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"CustomerID", Int64.Type}, {"ContactName", type text}, {"Email", type text}, {"IsPrimary", type logical}}),
+		    #"Filtered Rows" = Table.SelectRows(#"Changed Type", each ([IsPrimary] = true))
+		in
+		    #"Filtered Rows"
+	lineageTag: e06910bf-22fe-41a6-be44-15cf2ae9c9f9
+	queryGroup: base_group
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
+expression user_details =
+		let
+		    Source = Excel.Workbook(File.Contents("C:\Users\Vasudha L\OneDrive\Documents\dataset.xlsx"), null, true),
+		    user_details_Sheet = Source{[Item="user_details",Kind="Sheet"]}[Data],
+		    #"Promoted Headers" = Table.PromoteHeaders(user_details_Sheet, [PromoteAllScalars=true]),
+		    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"UserID", Int64.Type}, {"CreditLimit", Int64.Type}, {"Phone", type text}})
+		in
+		    #"Changed Type"
+	lineageTag: 289d23e7-8ab4-47b8-93f3-9b91125bf5ef
+	queryGroup: base_group
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
+expression regions =
+		let
+		    Source = Excel.Workbook(File.Contents("C:\Users\Vasudha L\OneDrive\Documents\dataset.xlsx"), null, true),
+		    regions_Sheet = Source{[Item="regions",Kind="Sheet"]}[Data],
+		    #"Changed Type" = Table.TransformColumnTypes(regions_Sheet,{{"Column1", type text}})
+		in
+		    #"Changed Type"
+	lineageTag: e3140476-9838-47e5-a1ab-c2a5b8589a03
+	queryGroup: base_group
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
+expression products =
+		let
+		    Source = Excel.Workbook(File.Contents("C:\Users\Vasudha L\OneDrive\Documents\dataset.xlsx"), null, true),
+		    products_Sheet = Source{[Item="products",Kind="Sheet"]}[Data],
+		    #"Promoted Headers" = Table.PromoteHeaders(products_Sheet, [PromoteAllScalars=true]),
+		    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"ProductCode", type text}, {"ProductName", type text}, {"Brand", type text}, {"SubcategoryName", type text}, {"UnitPrice", type number}, {"PrimarySupplier", type text}, {"ProductDescription", type text}, {"hash_key", type text}, {"source_id", type text}}),
+		    #"Filtered Rows" = Table.SelectRows(#"Changed Type", each ([ProductCode] <> "ELE-901" and [ProductCode] <> "HOM-902" and [ProductCode] <> "ZZZ-000"))
+		in
+		    #"Filtered Rows"
+	lineageTag: 661467be-6bdb-47c0-8d0c-0d406a7b0948
+	queryGroup: base_group
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
+expression subcategories =
+		let
+		    Source = Excel.Workbook(File.Contents("C:\Users\Vasudha L\OneDrive\Documents\dataset.xlsx"), null, true),
+		    subcategories_Sheet = Source{[Item="subcategories",Kind="Sheet"]}[Data],
+		    #"Changed Type" = Table.TransformColumnTypes(subcategories_Sheet,{{"Column1", type text}}),
+		    #"Promoted Headers" = Table.PromoteHeaders(#"Changed Type", [PromoteAllScalars=true]),
+		    #"Changed Type1" = Table.TransformColumnTypes(#"Promoted Headers",{{"CategorySubcategory", type text}}),
+		    #"Split Column by Delimiter" = Table.SplitColumn(#"Changed Type1", "CategorySubcategory", Splitter.SplitTextByDelimiter("|", QuoteStyle.Csv), {"CategorySubcategory.1", "CategorySubcategory.2"}),
+		    #"Changed Type2" = Table.TransformColumnTypes(#"Split Column by Delimiter",{{"CategorySubcategory.1", type text}, {"CategorySubcategory.2", type text}}),
+		    #"Renamed Columns" = Table.RenameColumns(#"Changed Type2",{{"CategorySubcategory.1", "category"}, {"CategorySubcategory.2", "subcategory"}}),
+		    #"Capitalized Each Word" = Table.TransformColumns(#"Renamed Columns",{{"subcategory", Text.Proper, type text}})
+		in
+		    #"Capitalized Each Word"
+	lineageTag: 7b7f38c7-c1ec-4263-8f0c-85c62cf0ab34
+	queryGroup: base_group
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
+expression order_line_items =
+		let
+		    Source = Excel.Workbook(File.Contents("C:\Users\Vasudha L\OneDrive\Documents\dataset.xlsx"), null, true),
+		    order_line_items_Sheet = Source{[Item="order_line_items",Kind="Sheet"]}[Data],
+		    #"Promoted Headers" = Table.PromoteHeaders(order_line_items_Sheet, [PromoteAllScalars=true]),
+		    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"LineID", type text}, {"OrderID", type text}, {"ProductName", type text}, {"Quantity", Int64.Type}, {"UnitPrice", type number}, {"UnitCost", type number}, {"DiscountPct", type number}, {"LineTotal", type number}})
+		in
+		    #"Changed Type"
+	lineageTag: b73be17b-8147-4bdb-bd02-2956d1e2e2cb
+	queryGroup: base_group
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
+expression ORDERS_2025 =
+		let
+		    Source = Excel.Workbook(File.Contents("C:\Users\Vasudha L\OneDrive\Documents\dataset.xlsx"), null, true),
+		    ORDERS_2025_Sheet = Source{[Item="ORDERS_2025",Kind="Sheet"]}[Data],
+		    #"Promoted Headers" = Table.PromoteHeaders(ORDERS_2025_Sheet, [PromoteAllScalars=true]),
+		    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"OrderID", type text}, {"LegacyRef", type text}, {"CustomerName", type text}, {"CustomerCity", type text}, {"RegionName", type text}, {"ShipToCity", type text}, {"BillToCity", type text}, {"OrderDate", type datetime}, {"OrderChannel", Int64.Type}, {"Status", type text}, {"Priority", type text}, {"OrderTotal", type number}, {"OrderNotes", type text}, {"GiftMessage", type any}, {"SourceFile", type text}})
+		in
+		    #"Changed Type"
+	lineageTag: c3cc6043-8dd1-4b42-b5f5-1b6b03b815fb
+	queryGroup: base_group
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
+expression ORDERS_2026 =
+		let
+		    Source = Excel.Workbook(File.Contents("C:\Users\Vasudha L\OneDrive\Documents\dataset.xlsx"), null, true),
+		    ORDERS_2026_Sheet = Source{[Item="ORDERS_2026",Kind="Sheet"]}[Data],
+		    #"Promoted Headers" = Table.PromoteHeaders(ORDERS_2026_Sheet, [PromoteAllScalars=true]),
+		    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"OrderID", type text}, {"CustomerName", type text}, {"CustomerCity", type text}, {"RegionName", type text}, {"ShipToCity", type text}, {"BillToCity", type text}, {"OrderDate", type datetime}, {"OrderChannel", Int64.Type}, {"Status", type text}, {"Priority", type text}, {"OrderTotal", type number}, {"OrderNotes", type text}, {"GiftMessage", type any}})
+		in
+		    #"Changed Type"
+	lineageTag: 5949dad4-7e29-45a5-9290-ac785816199c
+	queryGroup: base_group
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
+expression inventory =
+		let
+		    Source = Excel.Workbook(File.Contents("C:\Users\Vasudha L\OneDrive\Documents\dataset.xlsx"), null, true),
+		    inventory_Sheet = Source{[Item="inventory",Kind="Sheet"]}[Data],
+		    #"Changed Type" = Table.TransformColumnTypes(inventory_Sheet,{{"Column1", type text}, {"Column2", type any}, {"Column3", type any}, {"Column4", type any}, {"Column5", type any}, {"Column6", type any}, {"Column7", type any}, {"Column8", type any}, {"Column9", type any}, {"Column10", type any}, {"Column11", type any}, {"Column12", type any}, {"Column13", type any}}),
+		    #"Promoted Headers" = Table.PromoteHeaders(#"Changed Type", [PromoteAllScalars=true])
+		in
+		    #"Promoted Headers"
+	lineageTag: a37ffabd-0b4d-40ad-81b3-878e8ea77890
+	queryGroup: base_group
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
+expression orders =
+		let
+		    Source = Table.Combine({ORDERS_2025, ORDERS_2026}),
+		    #"Removed Columns" = Table.RemoveColumns(Source,{"LegacyRef", "SourceFile", "GiftMessage", "OrderNotes"})
+		in
+		    #"Removed Columns"
+	lineageTag: e96b8a0e-dbae-409a-93c4-c6ab20153810
+	queryGroup: base_group
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
+expression channels =
+		let
+		    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i45WMjRQ0lHyz8vJzEtVCC7JL0pVitWJVjICiQalliRm5igEJBaV5KUWgcWNQeLhGfk5qcWJORClJiAht8zUnBQFiFgsAA==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [cannel_code = _t, channel_name = _t]),
+		    #"Changed Type" = Table.TransformColumnTypes(Source,{{"cannel_code", Int64.Type}, {"channel_name", type text}})
+		in
+		    #"Changed Type"
+	lineageTag: ea12d1aa-98d9-4e0c-8d22-b15ea98a48bc
+	queryGroup: base_group
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
+expression CAMPAIGN_LOG =
+		let
+		    Source = Excel.Workbook(File.Contents("C:\Users\Vasudha L\OneDrive\Documents\dataset.xlsx"), null, true),
+		    CAMPAIGN_LOG_Sheet = Source{[Item="CAMPAIGN_LOG",Kind="Sheet"]}[Data],
+		    #"Promoted Headers" = Table.PromoteHeaders(CAMPAIGN_LOG_Sheet, [PromoteAllScalars=true]),
+		    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"CampaignName", type text}, {"Channel", type text}, {"StartDate", type date}, {"EndDate", type date}, {"Budget", Int64.Type}, {"Date", type date}, {"Impressions", Int64.Type}, {"Clicks", Int64.Type}, {"Spend", type number}})
+		in
+		    #"Changed Type"
+	lineageTag: b2699b5c-13ef-42fe-8d28-4f3abca93baf
+	queryGroup: base_group
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
+expression campaign_skus =
+		let
+		    Source = Excel.Workbook(File.Contents("C:\Users\Vasudha L\OneDrive\Documents\dataset.xlsx"), null, true),
+		    campaign_skus_Sheet = Source{[Item="campaign_skus",Kind="Sheet"]}[Data],
+		    #"Changed Type" = Table.TransformColumnTypes(campaign_skus_Sheet,{{"Column1", type text}, {"Column2", type text}})
+		in
+		    #"Changed Type"
+	lineageTag: 6fa132b1-6450-4b6d-aebe-cb37c858fdc1
+	queryGroup: base_group
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
+expression invoice_lines =
+		let
+		    Source = Excel.Workbook(File.Contents("C:\Users\Vasudha L\OneDrive\Documents\dataset.xlsx"), null, true),
+		    invoice_lines_Sheet = Source{[Item="invoice_lines",Kind="Sheet"]}[Data],
+		    #"Promoted Headers" = Table.PromoteHeaders(invoice_lines_Sheet, [PromoteAllScalars=true]),
+		    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"InvoiceLineID", type text}, {"InvoiceID", type text}, {"ProductName", type text}, {"Amount", type number}})
+		in
+		    #"Changed Type"
+	lineageTag: 5ae3174f-b043-4cff-b8aa-817dcf9f65f7
+	queryGroup: base_group
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
+expression INVOICES =
+		let
+		    Source = Excel.Workbook(File.Contents("C:\Users\Vasudha L\OneDrive\Documents\dataset.xlsx"), null, true),
+		    INVOICES_Sheet = Source{[Item="INVOICES",Kind="Sheet"]}[Data],
+		    #"Promoted Headers" = Table.PromoteHeaders(INVOICES_Sheet, [PromoteAllScalars=true]),
+		    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"InvoiceID", type text}, {"OrderID", type text}, {"CustomerName", type text}, {"InvoiceDate", type date}, {"Amount", type number}})
+		in
+		    #"Changed Type"
+	lineageTag: 2a7ff081-9ec3-46cb-93a2-3bbcf93898b5
+	queryGroup: base_group
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
+expression payments =
+		let
+		    Source = Excel.Workbook(File.Contents("C:\Users\Vasudha L\OneDrive\Documents\dataset.xlsx"), null, true),
+		    payments_Sheet = Source{[Item="payments",Kind="Sheet"]}[Data],
+		    #"Promoted Headers" = Table.PromoteHeaders(payments_Sheet, [PromoteAllScalars=true]),
+		    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"PaymentID", type text}, {"InvoiceID", type text}, {"CustomerName", type text}, {"PayDate", type date}, {"Amount", type number}})
+		in
+		    #"Changed Type"
+	lineageTag: 6cedc0a7-ee43-4dee-b330-2d8a0cb14c4e
+	queryGroup: base_group
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
+expression shipments =
+		let
+		    Source = Excel.Workbook(File.Contents("C:\Users\Vasudha L\OneDrive\Documents\dataset.xlsx"), null, true),
+		    shipments_Sheet = Source{[Item="shipments",Kind="Sheet"]}[Data],
+		    #"Promoted Headers" = Table.PromoteHeaders(shipments_Sheet, [PromoteAllScalars=true]),
+		    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"ShipmentID", type text}, {"OrderID", type text}, {"ShipMode", type text}, {"ShipDate", type date}, {"DeliveryDate", type date}})
+		in
+		    #"Changed Type"
+	lineageTag: 425d1d33-8cbd-4aa6-bf8d-8c9ca47ad457
+	queryGroup: base_group
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
+expression exchange_rates =
+		let
+		    Source = Excel.Workbook(File.Contents("C:\Users\Vasudha L\OneDrive\Documents\dataset.xlsx"), null, true),
+		    exchange_rates_Sheet = Source{[Item="exchange_rates",Kind="Sheet"]}[Data],
+		    #"Promoted Headers" = Table.PromoteHeaders(exchange_rates_Sheet, [PromoteAllScalars=true]),
+		    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"Currency", type text}, {"Rate", type number}, {"Date", type date}})
+		in
+		    #"Changed Type"
+	lineageTag: a485f23d-c808-4086-94f2-5bb2e5d3af84
+	queryGroup: base_group
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
+expression sales_targets =
+		let
+		    Source = Excel.Workbook(File.Contents("C:\Users\Vasudha L\OneDrive\Documents\dataset.xlsx"), null, true),
+		    sales_targets_Sheet = Source{[Item="sales_targets",Kind="Sheet"]}[Data],
+		    #"Promoted Headers" = Table.PromoteHeaders(sales_targets_Sheet, [PromoteAllScalars=true])
+		in
+		    #"Promoted Headers"
+	lineageTag: 31107a2e-2180-4d98-9b19-0b387b8b5442
+	queryGroup: base_group
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

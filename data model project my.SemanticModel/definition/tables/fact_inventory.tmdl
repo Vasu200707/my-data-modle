@@ -1,0 +1,53 @@
+table fact_inventory
+	lineageTag: 5cbbf623-af65-4446-b6f0-586b23942878
+
+	column product_key
+		dataType: int64
+		formatString: 0
+		lineageTag: 8a4dfe5f-6dba-442b-939c-faa393bdc2b5
+		summarizeBy: none
+		sourceColumn: product_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column month
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		lineageTag: 90806cb6-1c37-4f91-9873-01b125fdeedd
+		summarizeBy: none
+		sourceColumn: month
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation PBI_FormatHint = {"isDateTimeCustom":true}
+
+	column units
+		dataType: string
+		lineageTag: 3b71fa56-20d9-424e-81c6-fa92d6c747fc
+		summarizeBy: none
+		sourceColumn: units
+
+		annotation SummarizationSetBy = Automatic
+
+	partition fact_inventory = m
+		mode: import
+		queryGroup: facts
+		source =
+				let
+				    Source = inventory,
+				    #"Unpivoted Columns" = Table.UnpivotOtherColumns(Source, {"ProductName"}, "Attribute", "Value"),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Unpivoted Columns",{{"Attribute", type date}}),
+				    #"Merged Queries" = Table.NestedJoin(#"Changed Type", {"ProductName"}, dim_products, {"product_name"}, "dim_products", JoinKind.LeftOuter),
+				    #"Expanded dim_products" = Table.ExpandTableColumn(#"Merged Queries", "dim_products", {"product_key"}, {"dim_products.product_key"}),
+				    #"Reordered Columns" = Table.ReorderColumns(#"Expanded dim_products",{"dim_products.product_key", "ProductName", "Attribute", "Value"}),
+				    #"Removed Columns" = Table.RemoveColumns(#"Reordered Columns",{"ProductName"}),
+				    #"Renamed Columns" = Table.RenameColumns(#"Removed Columns",{{"dim_products.product_key", "product_key"}, {"Attribute", "month"}, {"Value", "units"}})
+				in
+				    #"Renamed Columns"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
